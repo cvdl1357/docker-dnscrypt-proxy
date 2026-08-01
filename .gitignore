@@ -1,0 +1,12 @@
+# Sensitive keys and secrets
+*.pem
+*.key
+*.env
+
+# Operating system / IDE files
+.DS_Store
+.idea/
+.vscode/
+
+# Local build / docker temporary files
+*.tar
