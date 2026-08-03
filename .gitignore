@@ -1,7 +1,17 @@
-# Sensitive keys and secrets
+# Certificates and Keys
+*.crt
 *.pem
 *.key
-*.env
+*.cer
+certs/*.crt
+certs/*.pem
+!certs/README.md
+
+# Configuration file
+dnscrypt-proxy.toml
+
+# Environment variables
+.env
 
 # Operating system / IDE files
 .DS_Store
