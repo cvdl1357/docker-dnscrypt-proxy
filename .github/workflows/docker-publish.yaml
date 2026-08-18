@@ -1,7 +1,7 @@
 name: Build and Publish dnscrypt-proxy
 
 on:
-  # Triggers the workflow on push events but only for the main branch
+  # Triggers the workflow on push events for main/master branches
   push:
     branches: [ "main", "master" ]
     # Only run if source files or this workflow change
@@ -11,6 +11,10 @@ on:
       - 'dnscrypt-proxy.toml.template'
       - 'docker-compose.yaml'
       - '.github/workflows/docker-publish.yml'
+
+  # Weekly scheduled build (Runs every Sunday at 02:00 UTC)
+  schedule:
+    - cron: '0 2 * * 0'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -63,6 +67,8 @@ jobs:
           # Compiles for Synology (amd64) and Raspberry Pi (arm64, arm/v7)
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
+          # Forces checking/pulling the latest base layer on scheduled runs
+          pull: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # Utilizes GitHub Actions cache to dramatically speed up future builds
