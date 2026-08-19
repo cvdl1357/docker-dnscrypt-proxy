@@ -21,7 +21,7 @@ A lightweight, multi-architecture Docker container running [DNSCrypt-Proxy](http
 
 ### 1. Using Docker Compose (Recommended)
 
-Create a `docker-compose.yaml` file:
+Create a `docker-compose.yml` file:
 
 ```yaml
 services:
