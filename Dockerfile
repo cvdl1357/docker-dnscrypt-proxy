@@ -14,7 +14,8 @@ FROM alpine:latest
 RUN apk update && apk upgrade --no-cache && \
     apk add --no-cache \
         ca-certificates \
-        gettext
+        gettext \
+        python3
 
 WORKDIR /etc/dnscrypt-proxy
 
