@@ -1,6 +1,16 @@
 # dnscrypt-proxy
 
-A flexible, lightweight multi-architecture Docker container for **dnscrypt-proxy** built on Alpine Linux. Supports `amd64`, `arm64`, and `arm/v7` platforms.
+A lightweight, multi-architecture Docker container running [DNSCrypt-Proxy](https://github.com/DNSCrypt/dnscrypt-proxy) to provide encrypted DNS resolution via **DNSCrypt v2** and **DNS-over-HTTPS (DoH)**.
+
+---
+
+## Features
+
+- **Encrypted DNS**: Full support for DNSCrypt v2 and DNS-over-HTTPS (DoH) protocols.
+- **DNSSEC Validation**: Ensures DNS responses are authentic and authenticates server signatures.
+- **Multi-Architecture**: Built for `linux/amd64`, `linux/arm64` (Apple Silicon / ARM 64-bit), and `linux/arm/v7`.
+- **Lightweight Baseline**: Minimal resource footprint built on Alpine Linux.
+- **Customizable**: Dynamic environment variable configuration for DoH providers, bootstrap resolvers, and custom CA certificate mounting.
 
 ---
 
@@ -15,14 +25,26 @@ services:
   dnscrypt-proxy:
     image: cvdl1357/dnscrypt-proxy:latest
     container_name: dnscrypt-proxy
-    restart: unless-stopped
     ports:
-      - "5053:5053/udp"
-      - "5053:5053/tcp"
+      - '5053:5053/udp'
+      - '5053:5053/tcp'
+
     environment:
-      - TZ=UTC
+      SERVER_NAME: 'custom-doh'
+
+      # DoH Provider Configuration (Format for DOH_HOST is vhost.SNI)
+      DOH_HOST: 'family.cloudflare-gateway.com'
+      DOH_PATH: '/dns-query'
+
+      # Bootstrap resolvers used to resolve DOH_HOST directly without public DNS lookups
+      BOOTSTRAP_RESOLVERS: '1.1.1.1:53,1.0.0.1:53'
+      NETPROBE_ADDRESS: '1.1.1.1:53'
+
     volumes:
-      - ./config:/config
+      # Optional: Mount custom local CA certificates into the container (Read-Only)
+      - './certs:/etc/ssl/certs/custom:ro'
+
+    restart: unless-stopped
 ```
 
 Run the container:
@@ -33,28 +55,17 @@ docker compose up -d
 
 ---
 
-### 2. Using Docker CLI
+## Verification
+
+Verify that DNSCrypt-Proxy is actively resolving encrypted queries on port 5053:
 
 ```bash
-docker run -d \
-  --name=dnscrypt-proxy \
-  --restart=unless-stopped \
-  -p 5053:5053/udp \
-  -p 5053:5053/tcp \
-  -e TZ=UTC \
-  -v $(pwd)/config:/config \
-  cvdl1357/dnscrypt-proxy:latest
+# Query via local port 5053
+dig @127.0.0.1 -p 5053 example.com
+
+# Verify resolver status via DNSCrypt debug endpoint
+dig @127.0.0.1 -p 5053 resolver-check.dnscrypt.info
 ```
-
----
-
-## Features & Configuration
-
-* **Default Port:** `5053` (TCP/UDP)
-* **Base Image:** Alpine Linux
-* **Supported Architectures:** `linux/amd64`, `linux/arm64`, `linux/arm/v7`
-
-Configuration settings can be modified by editing `dnscrypt-proxy.toml` inside your mounted volume directory.
 
 ---
 
