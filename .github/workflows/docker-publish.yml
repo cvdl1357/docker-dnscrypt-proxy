@@ -9,8 +9,9 @@ on:
       - 'Dockerfile'
       - 'entrypoint.sh'
       - 'dnscrypt-proxy.toml.template'
-      - 'docker-compose.yaml'
+      - 'docker-compose.yml'
       - 'README.md'
+      - 'DOCKER_README.md'
       - '.github/workflows/docker-publish.yml'
 
   # Weekly scheduled build (Runs every Sunday at 02:00 UTC)
