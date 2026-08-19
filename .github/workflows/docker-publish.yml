@@ -91,5 +91,5 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: ${{ secrets.DOCKERHUB_USERNAME }}/dnscrypt-proxy
           short-description: "Flexible, lightweight multi-arch dnscrypt-proxy container based on Alpine Linux."
-          readme-filepath: ./README.md
+          readme-filepath: ./DOCKER_README.md
           enable-url-completion: true
