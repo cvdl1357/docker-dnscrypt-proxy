@@ -3,13 +3,15 @@ FROM golang:alpine AS builder
 
 RUN apk add --no-cache git
 
-# Clone upstream repository and build binary
+# Clone upstream repository
 RUN git clone --depth 1 https://github.com/DNSCrypt/dnscrypt-proxy.git /src
 WORKDIR /src/dnscrypt-proxy
 
-# Force update sub-dependencies to patch Go stdlib CVEs
+# Force update dependencies to patch Go standard module advisories
 RUN go get -u ./... && go mod tidy
-RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /go/bin/dnscrypt-proxy
+
+# Build the binary targeting the specific dnscrypt-proxy package folder
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /go/bin/dnscrypt-proxy ./dnscrypt-proxy
 
 # Stage 2: Minimal, secure runtime
 FROM alpine:latest
