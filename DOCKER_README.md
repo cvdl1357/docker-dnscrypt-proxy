@@ -23,25 +23,41 @@ Create a `docker-compose.yml` file:
 ```yaml
 services:
   dnscrypt-proxy:
-    image: cvdl1357/dnscrypt-proxy:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+
     container_name: dnscrypt-proxy
     ports:
       - '5053:5053/udp'
       - '5053:5053/tcp'
 
     environment:
+      # Core upstream resolver selection
       SERVER_NAME: 'custom-doh'
+      SERVER_NAMES: "'custom-doh'"
+
+      # Listener & Caching
+      LISTEN_ADDRESSES: "['0.0.0.0:5053']"
+      CACHE_ENABLED: 'false'
+
+      # Security & Protocol
+      REQUIRE_DNSSEC: 'true'
+      HTTP3_ENABLED: 'true'
+
+      # Logging
+      LOG_LEVEL: 2
 
       # DoH Provider Configuration (Format for DOH_HOST is vhost.SNI)
       DOH_HOST: 'family.cloudflare-gateway.com'
       DOH_PATH: '/dns-query'
 
-      # Bootstrap resolvers used to resolve DOH_HOST directly without public DNS lookups
+      # Custom IPs used to resolve DOH_HOST directly without public DNS lookups
       BOOTSTRAP_RESOLVERS: '1.1.1.1:53,1.0.0.1:53'
       NETPROBE_ADDRESS: '1.1.1.1:53'
 
     volumes:
-      # Optional: Mount custom local CA certificates into the container (Read-Only)
+      # Optional: Mount local CA certificates directory into container (Read-Only)
       - './certs:/etc/ssl/certs/custom:ro'
 
     restart: unless-stopped

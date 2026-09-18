@@ -2,9 +2,9 @@
 #                             Global settings                                 #
 ###############################################################################
 
-server_names = [ ${FORMATTED_SERVER_NAMES} ]
+server_names = [ ${SERVER_NAMES} ]
 
-listen_addresses = ['0.0.0.0:5053']
+listen_addresses = ${LISTEN_ADDRESSES}
 
 max_clients = 250
 
@@ -18,7 +18,7 @@ dnscrypt_servers = true
 doh_servers = true
 odoh_servers = false
 
-require_dnssec = false
+require_dnssec = ${REQUIRE_DNSSEC}
 require_nolog = false
 require_nofilter = false
 
@@ -29,7 +29,7 @@ disabled_server_names = []
 ###############################################################################
 
 force_tcp = false
-http3 = false
+http3 = ${HTTP3_ENABLED}
 http3_probe = false
 
 timeout = 5000
@@ -45,6 +45,7 @@ enable_hot_reload = false
 #                                Logging                                      #
 ###############################################################################
 
+log_level = ${LOG_LEVEL}
 log_files_max_size = 10
 log_files_max_age = 7
 log_files_max_backups = 1
@@ -78,7 +79,7 @@ reject_ttl = 10
 #                                DNS Cache                                    #
 ###############################################################################
 
-cache = true
+cache = ${CACHE_ENABLED}
 cache_size = 4096
 cache_min_ttl = 2400
 cache_max_ttl = 86400

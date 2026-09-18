@@ -19,7 +19,12 @@ fi
 
 # 1. Defaults for runtime configuration
 export SERVER_NAME="${SERVER_NAME:-custom-doh}"
-export FORMATTED_SERVER_NAMES="'${SERVER_NAME}'"
+export SERVER_NAMES="${SERVER_NAMES:-'${SERVER_NAME}'}"
+export LISTEN_ADDRESSES="${LISTEN_ADDRESSES:-['0.0.0.0:5053']}"
+export HTTP3_ENABLED="${HTTP3_ENABLED:-false}"
+export REQUIRE_DNSSEC="${REQUIRE_DNSSEC:-false}"
+export CACHE_ENABLED="${CACHE_ENABLED:-true}"
+export LOG_LEVEL="${LOG_LEVEL:-2}"
 export NETPROBE_ADDRESS="${NETPROBE_ADDRESS:-1.1.1.1:53}"
 
 # 2. Format comma-separated BOOTSTRAP_RESOLVERS into TOML string list syntax: '1.1.1.1:53', '8.8.8.8:53'
@@ -65,11 +70,11 @@ else
 fi
 
 # 4. Substitute environment variables into dnscrypt-proxy.toml template
-envsubst '$FORMATTED_SERVER_NAMES $SERVER_NAME $NETPROBE_ADDRESS $FORMATTED_BOOTSTRAP $FINAL_STAMP' \
+envsubst '$SERVER_NAMES $SERVER_NAME $LISTEN_ADDRESSES $HTTP3_ENABLED $REQUIRE_DNSSEC $CACHE_ENABLED $LOG_LEVEL $NETPROBE_ADDRESS $FORMATTED_BOOTSTRAP $FINAL_STAMP' \
   < /etc/dnscrypt-proxy/dnscrypt-proxy.toml.template \
   > /etc/dnscrypt-proxy/dnscrypt-proxy.toml
 
-echo "[entrypoint] Starting dnscrypt-proxy using server configuration: ${SERVER_NAME}..."
+echo "[entrypoint] Starting dnscrypt-proxy using server configuration: [${SERVER_NAMES}]..."
 
 # 5. Hand off process execution to dnscrypt-proxy
 exec dnscrypt-proxy -config /etc/dnscrypt-proxy/dnscrypt-proxy.toml
