@@ -1,3 +1,4 @@
+######################################################################
 # Stage 1: Build binary using official Go toolchain
 FROM golang:alpine AS builder
 
@@ -11,6 +12,7 @@ WORKDIR /src/dnscrypt-proxy/dnscrypt-proxy
 RUN go get -u ./... && go mod tidy
 RUN CGO_ENABLED=0 go build -mod=mod -ldflags="-s -w" -o /go/bin/dnscrypt-proxy
 
+######################################################################
 # Stage 2: Minimal, secure runtime
 FROM alpine:latest
 
